@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Game Development Portfolio</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 40px; 
+            background: #1a1a1a; 
+            color: #f0f0f0; 
+        }
+        h1 { color: #66ccff; }
+        h2 { color: #ffdd66; }
+        img { 
+            width: 400px; 
+            border-radius: 10px; 
+            margin-bottom: 10px; 
+            display: block;
+        }
+        pre {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Your Name — Game Development Portfolio</h1>
+
+    <!-- Project 1 -->
+    <h2>Asteroids Game (C++ and SDL3).</h2>
+    <img src="images/project1.png" alt="Project 1 screenshot">
+    <pre><code>
+	void Game::LoadData()
+	{
+		//Background
+		Actor* bgActor = CreateActor<Actor>();
+		bgActor->GetTransform().SetPosition({400, 300});
+		SpriteComponent* bgSprite = bgActor->CreateComponent<SpriteComponent>();
+		bgSprite->SetTexture(GetTexture("Assets/Stars.png"));
+		//make sure it is draw on the bottom (any negative number works, really)
+		bgSprite->SetDrawOrder(-42);
+
+		//Ship
+		mShip = CreateActor<Ship>();
+		mShip->GetTransform().SetPosition({WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2});
+
+		//Create 10 asteroids
+		for (int i = 0; i < 10; i++)
+		{
+			CreateActor<Asteroid>();
+		}
+	}
+
+	void Game::UnloadData()
+	{
+		for (int i = 0; i < mActors.size(); i++)
+		{
+			delete mActors[i];
+		}
+		mActors.clear();
+
+		//Delete textures
+		for (auto pair : mTextures)
+		{
+			SDL_DestroyTexture(pair.second);
+		}
+		mTextures.clear();
+	}
+
+	SDL_Texture* Game::GetTexture(std::string filename)
+	{
+		/*
+		 *This iterator is required to that in can store the iterator returned by find() function of hashtable.
+		 *Remember that find() function returns an iterator if the key is found and a .end() iterator if it's not found.
+		 */
+		auto it = mTextures.find(filename);
+		if (it != mTextures.end())
+		{
+			return mTextures[filename];
+		}
+		else
+		{
+			//If that texture does not already exist in the map, then you first need to load the texture with that file name.
+			const char* cStringFileName = filename.c_str();
+			SDL_Surface* tempSurface = IMG_Load(cStringFileName);
+			if (tempSurface != nullptr)
+			{
+				SDL_Texture* tempTexture = SDL_CreateTextureFromSurface(myRenderer, tempSurface);
+				if (tempTexture != nullptr)
+				{
+					//Free the SDL_Surface*
+					SDL_DestroySurface(tempSurface);
+					//Add the SDL_Texture to the map.
+					mTextures[filename] = tempTexture;
+					return tempTexture;
+				}
+				else
+				{
+					SDL_Log("ERROR: Texture %s failed to load!!", cStringFileName);
+					return nullptr;
+				}
+			}
+			else
+			{
+				SDL_Log("ERROR: Texture %s failed to load!", cStringFileName);
+				return nullptr;
+			}
+		}
+	}
+    </code></pre>
+
+    <!-- Project 2 -->
+    <h2>Rasterizer, GPU Driver (C++).</h2>
+    <img src="images/project2.png" alt="Project 2 screenshot">
+    <pre><code>
+	void initialize_render(driver_state& state, int width, int height)
+	{
+		state.image_width=width;
+		state.image_height=height;
+		state.image_color= new pixel[width*height];
+		state.image_depth= new float[width*height];
+		std::cout<<"TODO: allocate and initialize state.image_color and state.image_depth."<<std::endl;
+		for (int i=0; i < width*height;i++) {
+			state.image_color[i] = 0;
+			state.image_depth[i] = std::numeric_limits<float>::max();
+		}
+	}
+
+	void render(driver_state& state, render_type type)
+	{
+		const data_geometry* tri[3];
+		switch (type) {
+		case render_type::triangle: {
+			data_geometry dummytri[3];
+			int count = 0;
+			data_vertex v;
+
+			for(int i = 0; i < state.num_vertices; i++) {
+				v.data = new float[state.floats_per_vertex];
+				dummytri[count].data = new float[MAX_FLOATS_PER_VERTEX];
+
+				for(int j = 0; j < state.floats_per_vertex; j++) {
+					v.data[j] = state.vertex_data[i*state.floats_per_vertex+j];
+				}
+				state.vertex_shader(v, dummytri[count], state.uniform_data);
+
+				//Re homogenize here: BUT DONT REHOMOGENIZE W!
+				if(dummytri[count].gl_Position[3] != 0) {
+					dummytri[count].gl_Position[0]/=dummytri[count].gl_Position[3];
+					dummytri[count].gl_Position[1]/=dummytri[count].gl_Position[3];
+					dummytri[count].gl_Position[2]/=dummytri[count].gl_Position[3];
+				}
+
+				tri[count] = &dummytri[count];
+				count++;
+				if(count == 3) {
+					rasterize_triangle(state, *tri[0], *tri[1], *tri[2]);
+					count = 0;    
+				}
+
+			}
+			break;
+		}
+		...
+	}
+    </code></pre>
+
+    <!-- Project 3 -->
+    <h2>Water caustics and god rays (C# and Unity).</h2>
+    <img src="images/project3.png" alt="Project 3 screenshot">
+    <pre><code>
+    void Start()
+    {
+        noise = new float[sizeX, sizeY, sizeZ];
+
+        // Generate Worley feature points
+        Vector3[] points = new Vector3[numFeaturePoints];
+        for (int i = 0; i < numFeaturePoints; i++)
+        {
+            points[i] = new Vector3(
+                Random.Range(0f, sizeX),
+                Random.Range(0f, sizeY),
+                Random.Range(0f, sizeZ)
+            );
+        }
+
+        // Compute Worley (F2 - F1)
+        for (int x = 0; x < sizeX; x++)
+        {
+            for (int y = 0; y < sizeY; y++)
+            {
+                for (int z = 0; z < sizeZ; z++)
+                {
+                    float f1 = float.MaxValue;
+                    float f2 = float.MaxValue;
+
+                    Vector3 p = new Vector3(x, y, z);
+
+                    foreach (var fp in points)
+                    {
+                        float d = Vector3.Distance(p, fp);
+
+                        if (d < f1)
+                        {
+                            f2 = f1;
+                            f1 = d;
+                        }
+                        else if (d < f2)
+                        {
+                            f2 = d;
+                        }
+                    }
+
+                    float w = Mathf.Clamp01(f2 - f1);
+                    w = Mathf.Pow(w, 6f);
+                    noise[x, y, z] = w;
+                }
+            }
+        }
+
+        // Create Texture (only X/Z resolution matters visually)
+        sliceTexture = new Texture2D(sizeX, sizeZ);
+        sliceTexture.filterMode = FilterMode.Trilinear;
+        sliceTexture.anisoLevel = 8;
+
+        // Setup Quad
+        quad.transform.position = Vector3.zero;
+        quad.transform.rotation = Quaternion.Euler(90, 0, 0);
+        quad.transform.localScale = new Vector3(10f, 10f, 1f);
+
+        displayMaterial = quad.GetComponent<Renderer>().material;
+        displayMaterial.SetTexture("_BaseMap", sliceTexture);
+        displayMaterial.SetTextureScale("_BaseMap", Vector2.one);
+    }
+    </code></pre>
+
+</body>
+</html>
