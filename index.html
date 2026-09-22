@@ -59,6 +59,18 @@
     <video src="videos/DieSeeLevel.mp4?v=3" autoplay muted loop playsinline></video>
 
     <!-- Project 2 -->
+    <h2>Jello Cube: Mass-Spring Physics Simulation</h2>
+    <p>A physically based simulation of an elastic jello cube bouncing around inside a box, built in C++ and OpenGL for USC's CSCI 520 (Computer Animation and Simulation). The cube is modeled as a 3D network of 512 point masses connected by springs, so it stretches, squashes, wobbles, and rebounds off the walls according to Newton's second law, Hooke's law, and damping.</p>
+    <ul>
+        <li><strong>Mass-spring network:</strong> structural, shear, and bend springs connecting an 8×8×8 grid of masses, with elastic and damping forces computed for every spring.</li>
+        <li><strong>Numerical integration:</strong> runs with both explicit Euler and 4th-order Runge-Kutta (RK4), with stiffness, damping, and time step tuned to keep the simulation stable.</li>
+        <li><strong>Collisions:</strong> detection and penalty-based response against all six walls of the bounding box.</li>
+        <li><strong>Force fields:</strong> arbitrary external force fields defined on a 3D grid, sampled at each mass point with trilinear interpolation.</li>
+    </ul>
+    <p class="tech">C++ · OpenGL · GLUT · Physically based animation</p>
+    <video src="videos/JelloCube.mp4?v=1" autoplay muted loop playsinline></video>
+
+    <!-- Project 3 -->
     <h2>Rasterizer, GPU Driver.</h2>
 	<p>In this project I built a rasterizer. The project was developed in C++ (Code snippet shown below).</p>
     <img src="images/project2.png" alt="Project 2 screenshot">
@@ -115,7 +127,7 @@
 	}
     </code></pre>
 
-    <!-- Project 3 -->
+    <!-- Project 4 -->
     <h2>Water caustics and god rays.</h2>
 	<p>In this project I built an underwater scene, simulating caustics with worley noise as a 2D texture and god rays with ray marching. The project was developed with C# in Unity (Code snippet shown below).</p>
     <img src="images/project3.png" alt="Project 3 screenshot">
