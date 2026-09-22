@@ -71,6 +71,18 @@
     <video src="videos/JelloCube.mp4?v=1" autoplay muted loop playsinline></video>
 
     <!-- Project 3 -->
+    <h2>Motion Capture Interpolation: Euler Angles vs. Quaternions</h2>
+    <p>A study of how different rotation interpolation methods reconstruct human motion, built in C++ and OpenGL for USC's CSCI 520 (Computer Animation and Simulation). Starting from optical motion capture data of dancing and martial arts, I dropped most of the frames and rebuilt the motion from the remaining keyframes, then measured how closely each method matched the original performance.</p>
+    <ul>
+        <li><strong>Euler interpolation:</strong> linear and Bezier interpolation of joint angles across the full skeleton hierarchy.</li>
+        <li><strong>Quaternion interpolation:</strong> conversions between Euler angles and quaternions, spherical linear interpolation (SLERP), and Bezier SLERP using Shoemake's control-point construction.</li>
+        <li><strong>Analysis:</strong> plotted joint angles over time for each method against the original data, comparing smoothness, accuracy, and artifacts such as gimbal-related jumps in Euler space.</li>
+    </ul>
+    <p>In the video, the red skeleton is the original motion capture and the green skeleton is rebuilt with Bezier SLERP from one out of every 41 frames.</p>
+    <p class="tech">C++ · OpenGL · FLTK · Quaternions · Motion capture (ASF/AMC)</p>
+    <video src="videos/MocapInterpolation.mp4?v=1" autoplay muted loop playsinline></video>
+
+    <!-- Project 4 -->
     <h2>Rasterizer, GPU Driver.</h2>
 	<p>In this project I built a rasterizer. The project was developed in C++ (Code snippet shown below).</p>
     <img src="images/project2.png" alt="Project 2 screenshot">
@@ -127,7 +139,7 @@
 	}
     </code></pre>
 
-    <!-- Project 4 -->
+    <!-- Project 5 -->
     <h2>Water caustics and god rays.</h2>
 	<p>In this project I built an underwater scene, simulating caustics with worley noise as a 2D texture and god rays with ray marching. The project was developed with C# in Unity (Code snippet shown below).</p>
     <img src="images/project3.png" alt="Project 3 screenshot">
