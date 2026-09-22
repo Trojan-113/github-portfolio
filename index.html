@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>My Game Development Portfolio</title>
     <style>
         body { 
@@ -11,12 +12,23 @@
         }
         h1 { color: #66ccff; }
         h2 { color: #ffdd66; }
-        img { 
+        img, video { 
             width: 400px; 
+            max-width: 100%;
             border-radius: 10px; 
             margin-bottom: 10px; 
             display: block;
         }
+        .award {
+            color: #ffdd66;
+            font-weight: bold;
+        }
+        .tech {
+            color: #aaaaaa;
+            font-style: italic;
+        }
+        ul { max-width: 800px; line-height: 1.5; }
+        p { max-width: 800px; line-height: 1.5; }
         pre {
             background: #2a2a2a;
             padding: 15px;
@@ -30,88 +42,18 @@
     <h1>Andre Perez Velasquez — Game Development and Computer Graphics Portfolio</h1>
 
     <!-- Project 1 -->
-    <h2>Asteroids Game.</h2>
-	<p>In this project I replicated the beloved game Asteroids using C++ and SDL3 (Code snippet shown below).</p>
-    <img src="images/project1.png" alt="Project 1 screenshot">
-    <pre><code>
-	void Game::LoadData()
-	{
-		//Background
-		Actor* bgActor = CreateActor<Actor>();
-		bgActor->GetTransform().SetPosition({400, 300});
-		SpriteComponent* bgSprite = bgActor->CreateComponent<SpriteComponent>();
-		bgSprite->SetTexture(GetTexture("Assets/Stars.png"));
-		//make sure it is draw on the bottom (any negative number works, really)
-		bgSprite->SetDrawOrder(-42);
-
-		//Ship
-		mShip = CreateActor<Ship>();
-		mShip->GetTransform().SetPosition({WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2});
-
-		//Create 10 asteroids
-		for (int i = 0; i < 10; i++)
-		{
-			CreateActor<Asteroid>();
-		}
-	}
-
-	void Game::UnloadData()
-	{
-		for (int i = 0; i < mActors.size(); i++)
-		{
-			delete mActors[i];
-		}
-		mActors.clear();
-
-		//Delete textures
-		for (auto pair : mTextures)
-		{
-			SDL_DestroyTexture(pair.second);
-		}
-		mTextures.clear();
-	}
-
-	SDL_Texture* Game::GetTexture(std::string filename)
-	{
-		/*
-		 *This iterator is required to that in can store the iterator returned by find() function of hashtable.
-		 *Remember that find() function returns an iterator if the key is found and a .end() iterator if it's not found.
-		 */
-		auto it = mTextures.find(filename);
-		if (it != mTextures.end())
-		{
-			return mTextures[filename];
-		}
-		else
-		{
-			//If that texture does not already exist in the map, then you first need to load the texture with that file name.
-			const char* cStringFileName = filename.c_str();
-			SDL_Surface* tempSurface = IMG_Load(cStringFileName);
-			if (tempSurface != nullptr)
-			{
-				SDL_Texture* tempTexture = SDL_CreateTextureFromSurface(myRenderer, tempSurface);
-				if (tempTexture != nullptr)
-				{
-					//Free the SDL_Surface*
-					SDL_DestroySurface(tempSurface);
-					//Add the SDL_Texture to the map.
-					mTextures[filename] = tempTexture;
-					return tempTexture;
-				}
-				else
-				{
-					SDL_Log("ERROR: Texture %s failed to load!!", cStringFileName);
-					return nullptr;
-				}
-			}
-			else
-			{
-				SDL_Log("ERROR: Texture %s failed to load!", cStringFileName);
-				return nullptr;
-			}
-		}
-	}
-    </code></pre>
+    <h2>Die, See, Level (PlayStation Career Pathways Game Jam)</h2>
+    <p class="award">🏆 1st Place, Ratchet It Up! Game Jam</p>
+    <p>A first-person action game set inside a giant cube, where the player can shift gravity to any of the six walls at will. Every physics object and every enemy falls toward the new floor, turning each fight into a puzzle of positioning and timing. Built by a small team over several weeks, the game took first place in the jam.</p>
+    <p>I designed and built the enemy AI and combat systems:</p>
+    <ul>
+        <li><strong>Enemy AI:</strong> enemies sense the player, chase them across the arena, and attack when in range, all working on top of the team's dynamic gravity system.</li>
+        <li><strong>Combat:</strong> line-trace player attacks with a cooldown, a damage pipeline with enemy health and death, and player health.</li>
+        <li><strong>Animation:</strong> Blend Spaces, Animation Blueprints, and Anim Montages for smooth locomotion and attacks.</li>
+        <li><strong>HUD:</strong> a live health bar bound to the player's state.</li>
+    </ul>
+    <p class="tech">Unreal Engine 5 · Blueprints · Mixamo · Git/GitHub</p>
+    <video src="videos/DieSeeLevel.mp4" autoplay muted loop playsinline></video>
 
     <!-- Project 2 -->
     <h2>Rasterizer, GPU Driver.</h2>
