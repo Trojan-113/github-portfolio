@@ -60,7 +60,8 @@
 
     <!-- Project 2 -->
     <h2>Jello Cube: Mass-Spring Physics Simulation</h2>
-    <p>A physically based simulation of an elastic jello cube bouncing around inside a box, built in C++ and OpenGL for USC's CSCI 520 (Computer Animation and Simulation). The cube is modeled as a 3D network of 512 point masses connected by springs, so it stretches, squashes, wobbles, and rebounds off the walls according to Newton's second law, Hooke's law, and damping.</p>
+    <p class="tech">Course project · CSCI 520 Computer Animation and Simulation, USC</p>
+    <p>A real-time simulation of an elastic jello cube, modeled as a 3D mass-spring network of 512 point masses. The cube stretches, squashes, and wobbles as it bounces around inside a box, driven by Hooke's law, damping, and numerical integration of Newton's equations of motion. The course provided the rendering and camera code; I implemented the physics:</p>
     <ul>
         <li><strong>Mass-spring network:</strong> structural, shear, and bend springs connecting an 8×8×8 grid of masses, with elastic and damping forces computed for every spring.</li>
         <li><strong>Numerical integration:</strong> runs with both explicit Euler and 4th-order Runge-Kutta (RK4), with stiffness, damping, and time step tuned to keep the simulation stable.</li>
@@ -72,13 +73,14 @@
 
     <!-- Project 3 -->
     <h2>Motion Capture Interpolation: Euler Angles vs. Quaternions</h2>
-    <p>A study of how different rotation interpolation methods reconstruct human motion, built in C++ and OpenGL for USC's CSCI 520 (Computer Animation and Simulation). Starting from optical motion capture data of dancing and martial arts, I dropped most of the frames and rebuilt the motion from the remaining keyframes, then measured how closely each method matched the original performance.</p>
+    <p class="tech">Course project · CSCI 520 Computer Animation and Simulation, USC</p>
+    <p>Rebuilding human motion from sparse keyframes. Starting from 120 fps optical motion capture of dancing and martial arts, I kept only a few keyframes, reconstructed every missing frame with four different interpolation methods, and measured how closely each one matched the original performance. The course provided the motion capture player and file parsing; I implemented the interpolation:</p>
     <ul>
-        <li><strong>Euler interpolation:</strong> linear and Bezier interpolation of joint angles across the full skeleton hierarchy.</li>
+        <li><strong>Euler interpolation:</strong> Bezier interpolation of joint angles across the full skeleton hierarchy, compared against the provided linear version.</li>
         <li><strong>Quaternion interpolation:</strong> conversions between Euler angles and quaternions, spherical linear interpolation (SLERP), and Bezier SLERP using Shoemake's control-point construction.</li>
         <li><strong>Analysis:</strong> plotted joint angles over time for each method against the original data, comparing smoothness, accuracy, and artifacts such as gimbal-related jumps in Euler space.</li>
     </ul>
-    <p>In the video, the red skeleton is the original motion capture and the green skeleton is rebuilt with Bezier SLERP from one out of every 41 frames.</p>
+    <p>In the video, the green skeleton is the original motion capture and the red skeleton is rebuilt with Bezier SLERP from one out of every 41 frames.</p>
     <p class="tech">C++ · OpenGL · FLTK · Quaternions · Motion capture (ASF/AMC)</p>
     <video src="videos/MocapInterpolation.mp4?v=1" autoplay muted loop playsinline></video>
 
