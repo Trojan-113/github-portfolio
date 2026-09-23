@@ -85,6 +85,18 @@
     <video src="videos/MocapInterpolation.mp4?v=1" autoplay muted loop playsinline></video>
 
     <!-- Project 4 -->
+    <h2>Inverse Kinematics with Skinning</h2>
+    <p class="tech">Course project · USC</p>
+    <p>Interactive character posing: the user grabs a handle on the character, drags it, and the whole body follows naturally. The system solves for joint rotations across the skeleton hierarchy in real time and deforms the character's mesh to match. The course provided the mesh loading, rendering, and user interface; I implemented the animation pipeline:</p>
+    <ul>
+        <li><strong>Forward kinematics:</strong> built each joint's local transform from Euler angles and traversed the skeleton hierarchy to compute global and skinning transforms.</li>
+        <li><strong>Linear blend skinning:</strong> deformed every mesh vertex as a weighted blend of the transforms of the joints that influence it.</li>
+        <li><strong>Inverse kinematics:</strong> computed the Jacobian of the handle positions with automatic differentiation (ADOL-C) and solved a Tikhonov-regularized least-squares system with Eigen, balancing accuracy against stable, natural-looking poses.</li>
+    </ul>
+    <p class="tech">C++ · OpenGL · Eigen · ADOL-C · Linear algebra</p>
+    <video src="videos/IKSkinning.mp4?v=1" autoplay muted loop playsinline></video>
+
+    <!-- Project 5 -->
     <h2>Rasterizer, GPU Driver.</h2>
 	<p>In this project I built a rasterizer. The project was developed in C++ (Code snippet shown below).</p>
     <img src="images/project2.png" alt="Project 2 screenshot">
@@ -141,7 +153,7 @@
 	}
     </code></pre>
 
-    <!-- Project 5 -->
+    <!-- Project 6 -->
     <h2>Water caustics and god rays.</h2>
 	<p>In this project I built an underwater scene, simulating caustics with worley noise as a 2D texture and god rays with ray marching. The project was developed with C# in Unity (Code snippet shown below).</p>
     <img src="images/project3.png" alt="Project 3 screenshot">
