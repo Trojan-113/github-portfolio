@@ -12,6 +12,8 @@
         }
         h1 { color: #66ccff; }
         h2 { color: #ffdd66; }
+        a { color: #66ccff; }
+        footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid #444; }
         img, video { 
             width: 400px; 
             max-width: 100%;
@@ -32,12 +34,6 @@
         }
         ul { max-width: 800px; line-height: 1.5; }
         p { max-width: 800px; line-height: 1.5; }
-        pre {
-            background: #2a2a2a;
-            padding: 15px;
-            border-radius: 8px;
-            overflow-x: auto;
-        }
     </style>
 </head>
 <body>
@@ -97,131 +93,44 @@
     <video src="videos/IKSkinning.mp4?v=1" autoplay muted loop playsinline></video>
 
     <!-- Project 5 -->
-    <h2>Rasterizer, GPU Driver.</h2>
-	<p>In this project I built a rasterizer. The project was developed in C++ (Code snippet shown below).</p>
-    <img src="images/project2.png" alt="Project 2 screenshot">
-    <pre><code>
-	void initialize_render(driver_state& state, int width, int height)
-	{
-		state.image_width=width;
-		state.image_height=height;
-		state.image_color= new pixel[width*height];
-		state.image_depth= new float[width*height];
-		std::cout<<"TODO: allocate and initialize state.image_color and state.image_depth."<<std::endl;
-		for (int i=0; i < width*height;i++) {
-			state.image_color[i] = 0;
-			state.image_depth[i] = std::numeric_limits<float>::max();
-		}
-	}
-
-	void render(driver_state& state, render_type type)
-	{
-		const data_geometry* tri[3];
-		switch (type) {
-		case render_type::triangle: {
-			data_geometry dummytri[3];
-			int count = 0;
-			data_vertex v;
-
-			for(int i = 0; i < state.num_vertices; i++) {
-				v.data = new float[state.floats_per_vertex];
-				dummytri[count].data = new float[MAX_FLOATS_PER_VERTEX];
-
-				for(int j = 0; j < state.floats_per_vertex; j++) {
-					v.data[j] = state.vertex_data[i*state.floats_per_vertex+j];
-				}
-				state.vertex_shader(v, dummytri[count], state.uniform_data);
-
-				//Re homogenize here: BUT DONT REHOMOGENIZE W!
-				if(dummytri[count].gl_Position[3] != 0) {
-					dummytri[count].gl_Position[0]/=dummytri[count].gl_Position[3];
-					dummytri[count].gl_Position[1]/=dummytri[count].gl_Position[3];
-					dummytri[count].gl_Position[2]/=dummytri[count].gl_Position[3];
-				}
-
-				tri[count] = &dummytri[count];
-				count++;
-				if(count == 3) {
-					rasterize_triangle(state, *tri[0], *tri[1], *tri[2]);
-					count = 0;    
-				}
-
-			}
-			break;
-		}
-		...
-	}
-    </code></pre>
+    <h2>Software Rasterizer: The GPU Pipeline in C++</h2>
+    <p>A from-scratch software implementation of the graphics pipeline that GPUs run in hardware, written in C++ without any graphics API. Given raw vertex data and shader functions, it produces the final image pixel by pixel, which meant building every stage that OpenGL normally hides.</p>
+    <ul>
+        <li><strong>Vertex processing:</strong> runs a vertex shader on each vertex, then performs the perspective divide into normalized device coordinates.</li>
+        <li><strong>Triangle rasterization:</strong> converts each triangle into the pixels it covers using barycentric coordinates.</li>
+        <li><strong>Attribute interpolation and shading:</strong> interpolates per-vertex data across each triangle and runs a fragment shader to color each pixel.</li>
+        <li><strong>Depth testing:</strong> a z-buffer that resolves which surface is visible at every pixel.</li>
+    </ul>
+    <p class="tech">C++ · Graphics pipeline · Rasterization</p>
+    <img src="images/project2.png" alt="Software rasterizer output">
 
     <!-- Project 6 -->
-    <h2>Water caustics and god rays.</h2>
-	<p>In this project I built an underwater scene, simulating caustics with worley noise as a 2D texture and god rays with ray marching. The project was developed with C# in Unity (Code snippet shown below).</p>
-    <img src="images/project3.png" alt="Project 3 screenshot">
-    <pre><code>
-    void Start()
-    {
-        noise = new float[sizeX, sizeY, sizeZ];
+    <h2>Underwater Caustics and God Rays</h2>
+    <p>An underwater scene recreating two signature effects of light passing through water: the web of bright caustic patterns rippling across the seafloor, and the shafts of light, or god rays, cutting down through the water.</p>
+    <ul>
+        <li><strong>Caustics:</strong> procedural Worley (cellular) noise using the F2 − F1 distance, which naturally forms the thin, bright ridges of real caustics. The noise is generated as a 3D volume, sharpened with a power curve, and displayed as 2D texture slices.</li>
+        <li><strong>God rays:</strong> volumetric light shafts rendered with ray marching, accumulating light along each view ray through the water.</li>
+    </ul>
+    <p class="tech">Unity · C# · Procedural noise · Ray marching</p>
+    <img src="images/project3.png" alt="Underwater caustics and god rays">
 
-        // Generate Worley feature points
-        Vector3[] points = new Vector3[numFeaturePoints];
-        for (int i = 0; i < numFeaturePoints; i++)
-        {
-            points[i] = new Vector3(
-                Random.Range(0f, sizeX),
-                Random.Range(0f, sizeY),
-                Random.Range(0f, sizeZ)
-            );
-        }
+    <footer>
+        <h2>Contact</h2>
+        <p>Source code for these projects is available on request. Feel free to reach out:</p>
+        <p>Email: <span id="email">andre.pv06 [at] gmail [dot] com</span><br>
+        LinkedIn: <a href="https://www.linkedin.com/in/andreperezv" target="_blank" rel="noopener">linkedin.com/in/andreperezv</a></p>
+    </footer>
 
-        // Compute Worley (F2 - F1)
-        for (int x = 0; x < sizeX; x++)
-        {
-            for (int y = 0; y < sizeY; y++)
-            {
-                for (int z = 0; z < sizeZ; z++)
-                {
-                    float f1 = float.MaxValue;
-                    float f2 = float.MaxValue;
-
-                    Vector3 p = new Vector3(x, y, z);
-
-                    foreach (var fp in points)
-                    {
-                        float d = Vector3.Distance(p, fp);
-
-                        if (d < f1)
-                        {
-                            f2 = f1;
-                            f1 = d;
-                        }
-                        else if (d < f2)
-                        {
-                            f2 = d;
-                        }
-                    }
-
-                    float w = Mathf.Clamp01(f2 - f1);
-                    w = Mathf.Pow(w, 6f);
-                    noise[x, y, z] = w;
-                }
-            }
-        }
-
-        // Create Texture (only X/Z resolution matters visually)
-        sliceTexture = new Texture2D(sizeX, sizeZ);
-        sliceTexture.filterMode = FilterMode.Trilinear;
-        sliceTexture.anisoLevel = 8;
-
-        // Setup Quad
-        quad.transform.position = Vector3.zero;
-        quad.transform.rotation = Quaternion.Euler(90, 0, 0);
-        quad.transform.localScale = new Vector3(10f, 10f, 1f);
-
-        displayMaterial = quad.GetComponent<Renderer>().material;
-        displayMaterial.SetTexture("_BaseMap", sliceTexture);
-        displayMaterial.SetTextureScale("_BaseMap", Vector2.one);
-    }
-    </code></pre>
+    <script>
+        // Build the email address in the browser so spam bots scraping the raw HTML don't find it
+        (function () {
+            var user = "andre.pv06";
+            var domain = "gmail.com";
+            var address = user + "@" + domain;
+            var el = document.getElementById("email");
+            el.innerHTML = '<a href="mailto:' + address + '">' + address + '</a>';
+        })();
+    </script>
 
 </body>
 </html>
