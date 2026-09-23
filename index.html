@@ -1,136 +1,508 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>My Game Development Portfolio</title>
-    <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            margin: 40px; 
-            background: #1a1a1a; 
-            color: #f0f0f0; 
-        }
-        h1 { color: #66ccff; }
-        h2 { color: #ffdd66; }
-        a { color: #66ccff; }
-        footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid #444; }
-        img, video { 
-            width: 400px; 
-            max-width: 100%;
-            border-radius: 10px; 
-            margin-bottom: 10px; 
-            display: block;
-        }
-        video {
-            width: 800px;
-        }
-        .award {
-            color: #ffdd66;
-            font-weight: bold;
-        }
-        .tech {
-            color: #aaaaaa;
-            font-style: italic;
-        }
-        ul { max-width: 800px; line-height: 1.5; }
-        p { max-width: 800px; line-height: 1.5; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Andre Perez Velasquez · Graphics, Simulation & Games</title>
+<meta name="description" content="Portfolio of Andre Perez Velasquez: real-time simulation, animation systems, rendering, and games.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #170F33;
+    --deep: #221748;
+    --panel: #2B1E5A;
+    --text: #F5F1FF;
+    --muted: #B9AEDD;
+    --pink: #FF3D7F;
+    --cyan: #2EE6F0;
+    --sun: #FFD23F;
+    --tang: #FF8A3D;
+    --display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+    --body: "Figtree", "Segoe UI", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--night);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  a { color: var(--cyan); }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; border-radius: 4px; }
+
+  /* Nav */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px clamp(20px, 4vw, 48px);
+    background: rgba(23, 15, 51, 0.72);
+    backdrop-filter: blur(10px);
+  }
+  nav .logo { font-family: var(--display); font-weight: 800; font-size: 20px; color: var(--text); text-decoration: none; }
+  nav ul { list-style: none; display: flex; gap: clamp(14px, 3vw, 32px); margin: 0; padding: 0; }
+  nav ul a { color: var(--muted); text-decoration: none; font-weight: 500; }
+  nav ul a:hover { color: var(--text); }
+
+  /* Hero with the jelly simulation */
+  .hero {
+    position: relative;
+    min-height: 92vh;
+    display: flex; align-items: center;
+    padding: 110px clamp(20px, 6vw, 80px) 60px;
+    overflow: hidden;
+  }
+  #jelly { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: pan-y; }
+  .hero-content { position: relative; max-width: 900px; pointer-events: none; }
+  .hero h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(48px, 9vw, 120px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin: 0 0 24px;
+    text-shadow: 0 4px 30px rgba(23, 15, 51, 0.8);
+  }
+  .hero p.tagline {
+    font-size: clamp(19px, 2.2vw, 24px);
+    max-width: 34ch;
+    margin: 0 0 32px;
+    text-shadow: 0 2px 16px rgba(23, 15, 51, 0.9);
+  }
+  .hero-links { display: flex; flex-wrap: wrap; gap: 12px; pointer-events: auto; }
+  .btn {
+    display: inline-block;
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--night);
+    background: var(--sun);
+    transition: transform 0.15s ease;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn.ghost { background: transparent; color: var(--text); border: 2px solid var(--text); }
+  .hint {
+    position: absolute; bottom: 22px; right: clamp(20px, 6vw, 80px);
+    color: var(--muted); font-size: 14px; margin: 0;
+    pointer-events: none;
+  }
+
+  /* Sections */
+  section { padding: 90px clamp(20px, 6vw, 80px); }
+  .section-title {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(36px, 5vw, 56px);
+    margin: 0 0 40px;
+    line-height: 1.05;
+  }
+  #about { background: var(--deep); }
+  #about .about-text { max-width: 68ch; font-size: 19px; }
+
+  /* Projects */
+  .project {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: clamp(28px, 4vw, 56px);
+    align-items: start;
+    margin-bottom: 110px;
+  }
+  .project:nth-of-type(even) .media { order: 2; }
+  .media {
+    position: relative;
+    border-radius: 18px;
+    overflow: hidden;
+    background: var(--panel);
+    box-shadow: 10px 10px 0 var(--accent);
+    position: sticky;
+    top: 90px;
+  }
+  .media video, .media img { display: block; width: 100%; height: auto; }
+  .project h3 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(28px, 3.2vw, 40px);
+    line-height: 1.08;
+    margin: 6px 0 14px;
+  }
+  .kind { font-weight: 700; color: var(--accent); margin: 0; }
+  .award {
+    display: inline-block;
+    background: var(--sun);
+    color: var(--night);
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin: 4px 0 20px;
+    transform: rotate(-2deg);
+  }
+  .project p { margin: 0 0 14px; max-width: 62ch; }
+  .project ul { padding-left: 20px; margin: 0 0 18px; max-width: 62ch; }
+  .project li { margin-bottom: 8px; }
+  .project li::marker { color: var(--accent); }
+  .note { color: var(--muted); font-size: 15px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0 !important; margin: 18px 0 0 !important; }
+  .tags li {
+    margin: 0;
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: 1.5px solid var(--accent);
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .game { --accent: var(--sun); }
+  .sim { --accent: var(--cyan); }
+  .anim { --accent: var(--pink); }
+  .render { --accent: var(--tang); }
+
+  /* Contact */
+  #contact { background: var(--deep); }
+  #contact p { max-width: 60ch; font-size: 19px; }
+  .contact-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+  footer { padding: 30px clamp(20px, 6vw, 80px); color: var(--muted); font-size: 14px; }
+
+  @media (max-width: 860px) {
+    .project { grid-template-columns: 1fr; margin-bottom: 80px; }
+    .project:nth-of-type(even) .media { order: 0; }
+    .media { position: relative; top: 0; }
+    .hint { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .btn { transition: none; }
+  }
+</style>
 </head>
 <body>
 
-    <h1>Andre Perez Velasquez — Game Development and Computer Graphics Portfolio</h1>
+<nav aria-label="Main">
+  <a class="logo" href="#top">Andre PV</a>
+  <ul>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
 
-    <!-- Project 1 -->
-    <h2>Die, See, Level (PlayStation Career Pathways Game Jam)</h2>
-    <p class="award">🏆 1st Place, Ratchet It Up! Game Jam</p>
-    <p>A first-person action game set inside a giant cube, where the player can shift gravity to any of the six walls at will. Every physics object and every enemy falls toward the new floor, turning each fight into a puzzle of positioning and timing. Built by a small team over several weeks, the game took first place in the jam.</p>
-    <p>I designed and built the enemy AI and combat systems:</p>
-    <ul>
+<header class="hero" id="top">
+  <canvas id="jelly" aria-hidden="true"></canvas>
+  <div class="hero-content">
+    <h1>Andre Perez Velasquez</h1>
+    <p class="tagline">I build real-time simulations, animation systems, and games in C++.</p>
+    <div class="hero-links">
+      <a class="btn" href="#work">See my work</a>
+      <a class="btn ghost" href="https://www.linkedin.com/in/andreperezv" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn ghost" href="https://github.com/Trojan-113" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+  <p class="hint">Move your cursor through the grid. It's a live mass-spring simulation.</p>
+</header>
+
+<main>
+<section id="work">
+  <h2 class="section-title">Selected work</h2>
+
+  <article class="project game">
+    <div class="media">
+      <video src="videos/DieSeeLevel.mp4?v=3" muted loop playsinline preload="metadata" aria-label="Gameplay of Die, See, Level"></video>
+    </div>
+    <div class="info">
+      <p class="kind">Game</p>
+      <h3>Die, See, Level</h3>
+      <p class="award">🏆 1st place, Ratchet It Up! Game Jam</p>
+      <p>A first-person action game set inside a giant cube, where the player can shift gravity to any of the six walls at will. Every physics object and every enemy falls toward the new floor, turning each fight into a puzzle of positioning and timing. Built by a small team over several weeks for the PlayStation Career Pathways program.</p>
+      <p>I designed and built the enemy AI and combat systems:</p>
+      <ul>
         <li><strong>Enemy AI:</strong> enemies sense the player, chase them across the arena, and attack when in range, all working on top of the team's dynamic gravity system.</li>
         <li><strong>Combat:</strong> line-trace player attacks with a cooldown, a damage pipeline with enemy health and death, and player health.</li>
         <li><strong>Animation:</strong> Blend Spaces, Animation Blueprints, and Anim Montages for smooth locomotion and attacks.</li>
         <li><strong>HUD:</strong> a live health bar bound to the player's state.</li>
-    </ul>
-    <p class="tech">Unreal Engine 5 · Blueprints · Mixamo · Git/GitHub</p>
-    <video src="videos/DieSeeLevel.mp4?v=3" autoplay muted loop playsinline></video>
+      </ul>
+      <ul class="tags" aria-label="Tools">
+        <li>Unreal Engine 5</li><li>Blueprints</li><li>Mixamo</li><li>Git/GitHub</li>
+      </ul>
+    </div>
+  </article>
 
-    <!-- Project 2 -->
-    <h2>Jello Cube: Mass-Spring Physics Simulation</h2>
-    <p class="tech">Course project · USC</p>
-    <p>A real-time simulation of an elastic jello cube, modeled as a 3D mass-spring network of 512 point masses. The cube stretches, squashes, and wobbles as it bounces around inside a box, driven by Hooke's law, damping, and numerical integration of Newton's equations of motion. The course provided the rendering and camera code; I implemented the physics:</p>
-    <ul>
+  <article class="project sim">
+    <div class="media">
+      <video src="videos/JelloCube.mp4?v=1" muted loop playsinline preload="metadata" aria-label="Jello cube simulation"></video>
+    </div>
+    <div class="info">
+      <p class="kind">Simulation</p>
+      <h3>Jello Cube: Mass-Spring Physics</h3>
+      <p>A real-time simulation of an elastic jello cube, modeled as a 3D mass-spring network of 512 point masses. The cube stretches, squashes, and wobbles as it bounces around inside a box, driven by Hooke's law, damping, and numerical integration of Newton's equations of motion.</p>
+      <ul>
         <li><strong>Mass-spring network:</strong> structural, shear, and bend springs connecting an 8×8×8 grid of masses, with elastic and damping forces computed for every spring.</li>
         <li><strong>Numerical integration:</strong> runs with both explicit Euler and 4th-order Runge-Kutta (RK4), with stiffness, damping, and time step tuned to keep the simulation stable.</li>
         <li><strong>Collisions:</strong> detection and penalty-based response against all six walls of the bounding box.</li>
         <li><strong>Force fields:</strong> arbitrary external force fields defined on a 3D grid, sampled at each mass point with trilinear interpolation.</li>
-    </ul>
-    <p class="tech">C++ · OpenGL · GLUT · Physically based animation</p>
-    <video src="videos/JelloCube.mp4?v=1" autoplay muted loop playsinline></video>
+      </ul>
+      <p class="note">Course project at USC. The course provided the rendering and camera code; I implemented the physics.</p>
+      <ul class="tags" aria-label="Tools">
+        <li>C++</li><li>OpenGL</li><li>GLUT</li><li>RK4</li>
+      </ul>
+    </div>
+  </article>
 
-    <!-- Project 3 -->
-    <h2>Motion Capture Interpolation: Euler Angles vs. Quaternions</h2>
-    <p class="tech">Course project · USC</p>
-    <p>Rebuilding human motion from sparse keyframes. Starting from 120 fps optical motion capture of dancing and martial arts, I kept only a few keyframes, reconstructed every missing frame with four different interpolation methods, and measured how closely each one matched the original performance. The course provided the motion capture player and file parsing; I implemented the interpolation:</p>
-    <ul>
+  <article class="project anim">
+    <div class="media">
+      <video src="videos/MocapInterpolation.mp4?v=1" muted loop playsinline preload="metadata" aria-label="Original and interpolated motion capture skeletons"></video>
+    </div>
+    <div class="info">
+      <p class="kind">Animation</p>
+      <h3>Motion Capture Interpolation</h3>
+      <p>Rebuilding human motion from sparse keyframes. Starting from 120 fps optical motion capture of dancing and martial arts, I kept only a few keyframes, reconstructed every missing frame with four different interpolation methods, and measured how closely each one matched the original performance.</p>
+      <ul>
         <li><strong>Euler interpolation:</strong> Bezier interpolation of joint angles across the full skeleton hierarchy, compared against the provided linear version.</li>
         <li><strong>Quaternion interpolation:</strong> conversions between Euler angles and quaternions, spherical linear interpolation (SLERP), and Bezier SLERP using Shoemake's control-point construction.</li>
         <li><strong>Analysis:</strong> plotted joint angles over time for each method against the original data, comparing smoothness, accuracy, and artifacts such as gimbal-related jumps in Euler space.</li>
-    </ul>
-    <p>In the video, the green skeleton is the original motion capture and the red skeleton is rebuilt with Bezier SLERP from one out of every 41 frames.</p>
-    <p class="tech">C++ · OpenGL · FLTK · Quaternions · Motion capture (ASF/AMC)</p>
-    <video src="videos/MocapInterpolation.mp4?v=1" autoplay muted loop playsinline></video>
+      </ul>
+      <p class="note">In the video, the green skeleton is the original motion capture and the red skeleton is rebuilt with Bezier SLERP from one out of every 41 frames. Course project at USC; the course provided the player and file parsing.</p>
+      <ul class="tags" aria-label="Tools">
+        <li>C++</li><li>OpenGL</li><li>FLTK</li><li>Quaternions</li><li>ASF/AMC mocap</li>
+      </ul>
+    </div>
+  </article>
 
-    <!-- Project 4 -->
-    <h2>Inverse Kinematics with Skinning</h2>
-    <p class="tech">Course project · USC</p>
-    <p>Interactive character posing: the user grabs a handle on the character, drags it, and the whole body follows naturally. The system solves for joint rotations across the skeleton hierarchy in real time and deforms the character's mesh to match. The course provided the mesh loading, rendering, and user interface; I implemented the animation pipeline:</p>
-    <ul>
+  <article class="project anim">
+    <div class="media">
+      <video src="videos/IKSkinning.mp4?v=1" muted loop playsinline preload="metadata" aria-label="Character posed with inverse kinematics"></video>
+    </div>
+    <div class="info">
+      <p class="kind">Animation</p>
+      <h3>Inverse Kinematics with Skinning</h3>
+      <p>Interactive character posing: grab a handle on the character, drag it, and the whole body follows naturally. The system solves for joint rotations across the skeleton hierarchy in real time and deforms the character's mesh to match.</p>
+      <ul>
         <li><strong>Forward kinematics:</strong> built each joint's local transform from Euler angles and traversed the skeleton hierarchy to compute global and skinning transforms.</li>
         <li><strong>Linear blend skinning:</strong> deformed every mesh vertex as a weighted blend of the transforms of the joints that influence it.</li>
         <li><strong>Inverse kinematics:</strong> computed the Jacobian of the handle positions with automatic differentiation (ADOL-C) and solved a Tikhonov-regularized least-squares system with Eigen, balancing accuracy against stable, natural-looking poses.</li>
-    </ul>
-    <p class="tech">C++ · OpenGL · Eigen · ADOL-C · Linear algebra</p>
-    <video src="videos/IKSkinning.mp4?v=1" autoplay muted loop playsinline></video>
+      </ul>
+      <p class="note">Course project at USC. The course provided mesh loading, rendering, and the user interface; I implemented the animation pipeline.</p>
+      <ul class="tags" aria-label="Tools">
+        <li>C++</li><li>OpenGL</li><li>Eigen</li><li>ADOL-C</li>
+      </ul>
+    </div>
+  </article>
 
-    <!-- Project 5 -->
-    <h2>Software Rasterizer: The GPU Pipeline in C++</h2>
-    <p>A from-scratch software implementation of the graphics pipeline that GPUs run in hardware, written in C++ without any graphics API. Given raw vertex data and shader functions, it produces the final image pixel by pixel, which meant building every stage that OpenGL normally hides.</p>
-    <ul>
+  <article class="project render">
+    <div class="media">
+      <img src="images/project2.png" alt="Output of the software rasterizer">
+    </div>
+    <div class="info">
+      <p class="kind">Rendering</p>
+      <h3>Software Rasterizer</h3>
+      <p>A from-scratch software implementation of the graphics pipeline that GPUs run in hardware, written in C++ without any graphics API. Given raw vertex data and shader functions, it produces the final image pixel by pixel, which meant building every stage that OpenGL normally hides.</p>
+      <ul>
         <li><strong>Vertex processing:</strong> runs a vertex shader on each vertex, then performs the perspective divide into normalized device coordinates.</li>
         <li><strong>Triangle rasterization:</strong> converts each triangle into the pixels it covers using barycentric coordinates.</li>
         <li><strong>Attribute interpolation and shading:</strong> interpolates per-vertex data across each triangle and runs a fragment shader to color each pixel.</li>
         <li><strong>Depth testing:</strong> a z-buffer that resolves which surface is visible at every pixel.</li>
-    </ul>
-    <p class="tech">C++ · Graphics pipeline · Rasterization</p>
-    <img src="images/project2.png" alt="Software rasterizer output">
+      </ul>
+      <ul class="tags" aria-label="Tools">
+        <li>C++</li><li>Graphics pipeline</li><li>Rasterization</li>
+      </ul>
+    </div>
+  </article>
 
-    <!-- Project 6 -->
-    <h2>Underwater Caustics and God Rays</h2>
-    <p>An underwater scene recreating two signature effects of light passing through water: the web of bright caustic patterns rippling across the seafloor, and the shafts of light, or god rays, cutting down through the water.</p>
-    <ul>
+  <article class="project render">
+    <div class="media">
+      <img src="images/project3.png" alt="Underwater scene with caustics and god rays">
+    </div>
+    <div class="info">
+      <p class="kind">Rendering</p>
+      <h3>Underwater Caustics and God Rays</h3>
+      <p>An underwater scene recreating two signature effects of light passing through water: the web of bright caustic patterns rippling across the seafloor, and the shafts of light, or god rays, cutting down through the water.</p>
+      <ul>
         <li><strong>Caustics:</strong> procedural Worley (cellular) noise using the F2 − F1 distance, which naturally forms the thin, bright ridges of real caustics. The noise is generated as a 3D volume, sharpened with a power curve, and displayed as 2D texture slices.</li>
         <li><strong>God rays:</strong> volumetric light shafts rendered with ray marching, accumulating light along each view ray through the water.</li>
-    </ul>
-    <p class="tech">Unity · C# · Procedural noise · Ray marching</p>
-    <img src="images/project3.png" alt="Underwater caustics and god rays">
+      </ul>
+      <ul class="tags" aria-label="Tools">
+        <li>Unity</li><li>C#</li><li>Procedural noise</li><li>Ray marching</li>
+      </ul>
+    </div>
+  </article>
+</section>
 
-    <footer>
-        <h2>Contact</h2>
-        <p>Source code for these projects is available on request. Feel free to reach out:</p>
-        <p>Email: <span id="email">andre.pv06 [at] gmail [dot] com</span><br>
-        LinkedIn: <a href="https://www.linkedin.com/in/andreperezv" target="_blank" rel="noopener">linkedin.com/in/andreperezv</a></p>
-    </footer>
+<section id="about">
+  <h2 class="section-title">About</h2>
+  <div class="about-text">
+    <p>I'm a Computer Science master's student at USC and a Fulbright-García Robles grantee, focused on computer graphics, real-time simulation, and animation. I'm especially drawn to physically based simulation, and I'm working toward doing research in it.</p>
+    <p>I'm also very interested in game development, where simulation, animation, and rendering come together into something people can play. With my team, I built Die, See, Level, which won first place in the Ratchet It Up! Game Jam.</p>
+    <p>Before USC, I studied mechatronics engineering at Tec de Monterrey, including an exchange semester at UT Austin, and worked as an embedded software engineering intern. That background is why I like work where math, physics, and code meet on screen.</p>
+  </div>
+</section>
 
-    <script>
-        // Build the email address in the browser so spam bots scraping the raw HTML don't find it
-        (function () {
-            var user = "andre.pv06";
-            var domain = "gmail.com";
-            var address = user + "@" + domain;
-            var el = document.getElementById("email");
-            el.innerHTML = '<a href="mailto:' + address + '">' + address + '</a>';
-        })();
-    </script>
+<section id="contact">
+  <h2 class="section-title">Let's talk</h2>
+  <p>I'm happy to walk through any of these projects. Source code is available on request.</p>
+  <div class="contact-links">
+    <span id="email"><span class="btn ghost">andre.pv06 [at] gmail [dot] com</span></span>
+    <a class="btn ghost" href="https://www.linkedin.com/in/andreperezv" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+</section>
+</main>
 
+<footer>
+  <p>Andre Perez Velasquez</p>
+</footer>
+
+<script>
+  // Build the email address in the browser so spam bots scraping the raw HTML don't find it
+  (function () {
+    var address = "andre.pv06" + "@" + "gmail.com";
+    document.getElementById("email").innerHTML =
+      '<a class="btn" href="mailto:' + address + '">' + address + '</a>';
+  })();
+
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Play project videos only while they are on screen
+  (function () {
+    var videos = document.querySelectorAll(".media video");
+    if (reduceMotion) {
+      videos.forEach(function (v) { v.controls = true; });
+      return;
+    }
+    if (!("IntersectionObserver" in window)) {
+      videos.forEach(function (v) { v.play().catch(function () {}); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.play().catch(function () {}); }
+        else { e.target.pause(); }
+      });
+    }, { threshold: 0.25 });
+    videos.forEach(function (v) { io.observe(v); });
+  })();
+
+  // Hero: a 2D mass-spring grid that reacts to the cursor
+  (function () {
+    var canvas = document.getElementById("jelly");
+    var ctx = canvas.getContext("2d");
+    var hero = canvas.parentElement;
+    var SPACING = 42, K_REST = 0.02, K_NEIGHBOR = 0.18, DAMPING = 0.9, RADIUS = 160, PUSH = 4.5;
+    var cols, rows, w, h, dpr, px, py, vx, vy;
+    var mouse = { x: -9999, y: -9999, active: false };
+    var ghost = { t: 0 };
+
+    function setup() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = hero.clientWidth; h = hero.clientHeight;
+      canvas.width = w * dpr; canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      cols = Math.ceil(w / SPACING) + 2;
+      rows = Math.ceil(h / SPACING) + 2;
+      var n = cols * rows;
+      px = new Float32Array(n); py = new Float32Array(n);
+      vx = new Float32Array(n); vy = new Float32Array(n);
+    }
+
+    function step() {
+      var i, r, c, lx, ly;
+      // Wandering "ghost" poke so the grid moves even without a cursor
+      ghost.t += 0.006;
+      var gx = w * (0.55 + 0.35 * Math.sin(ghost.t * 1.3));
+      var gy = h * (0.5 + 0.35 * Math.sin(ghost.t * 0.9 + 1.0));
+      for (r = 0; r < rows; r++) {
+        for (c = 0; c < cols; c++) {
+          i = r * cols + c;
+          // Spring back to rest, plus coupling to the four neighbors
+          lx = -4 * px[i]; ly = -4 * py[i];
+          lx += c > 0 ? px[i - 1] : px[i];
+          ly += c > 0 ? py[i - 1] : py[i];
+          lx += c < cols - 1 ? px[i + 1] : px[i];
+          ly += c < cols - 1 ? py[i + 1] : py[i];
+          lx += r > 0 ? px[i - cols] : px[i];
+          ly += r > 0 ? py[i - cols] : py[i];
+          lx += r < rows - 1 ? px[i + cols] : px[i];
+          ly += r < rows - 1 ? py[i + cols] : py[i];
+          vx[i] += -K_REST * px[i] + K_NEIGHBOR * lx;
+          vy[i] += -K_REST * py[i] + K_NEIGHBOR * ly;
+          // Push away from the cursor (or the ghost)
+          var restX = (c - 1) * SPACING, restY = (r - 1) * SPACING;
+          applyPush(i, restX, restY, mouse.active ? mouse.x : gx, mouse.active ? mouse.y : gy, mouse.active ? 1 : 0.35);
+        }
+      }
+      for (i = 0; i < px.length; i++) {
+        vx[i] *= DAMPING; vy[i] *= DAMPING;
+        px[i] += vx[i]; py[i] += vy[i];
+      }
+    }
+
+    function applyPush(i, restX, restY, mx, my, strength) {
+      var dx = restX + px[i] - mx, dy = restY + py[i] - my;
+      var d2 = dx * dx + dy * dy;
+      if (d2 < RADIUS * RADIUS && d2 > 1) {
+        var d = Math.sqrt(d2), f = (1 - d / RADIUS) * PUSH * strength;
+        vx[i] += (dx / d) * f; vy[i] += (dy / d) * f;
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, w, h);
+      var grad = ctx.createLinearGradient(0, 0, w, h);
+      grad.addColorStop(0, "rgba(255, 61, 127, 0.55)");
+      grad.addColorStop(0.5, "rgba(46, 230, 240, 0.45)");
+      grad.addColorStop(1, "rgba(255, 210, 63, 0.5)");
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 1.2;
+      var r, c, i;
+      ctx.beginPath();
+      for (r = 0; r < rows; r++) {
+        for (c = 0; c < cols; c++) {
+          i = r * cols + c;
+          var x = (c - 1) * SPACING + px[i], y = (r - 1) * SPACING + py[i];
+          if (c === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+      }
+      for (c = 0; c < cols; c++) {
+        for (r = 0; r < rows; r++) {
+          i = r * cols + c;
+          var x2 = (c - 1) * SPACING + px[i], y2 = (r - 1) * SPACING + py[i];
+          if (r === 0) ctx.moveTo(x2, y2); else ctx.lineTo(x2, y2);
+        }
+      }
+      ctx.stroke();
+      // Nodes glow brighter the more they are displaced
+      for (i = 0; i < px.length; i++) {
+        var disp = Math.abs(px[i]) + Math.abs(py[i]);
+        if (disp < 1.5) continue;
+        r = Math.floor(i / cols); c = i % cols;
+        ctx.fillStyle = "rgba(255, 210, 63," + Math.min(disp / 30, 0.9) + ")";
+        ctx.beginPath();
+        ctx.arc((c - 1) * SPACING + px[i], (r - 1) * SPACING + py[i], 2 + Math.min(disp / 8, 3), 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    var running = true;
+    function loop() {
+      if (running) { step(); step(); draw(); }
+      requestAnimationFrame(loop);
+    }
+
+    hero.addEventListener("pointermove", function (e) {
+      var rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left; mouse.y = e.clientY - rect.top; mouse.active = true;
+    });
+    hero.addEventListener("pointerleave", function () { mouse.active = false; });
+    window.addEventListener("resize", setup);
+
+    // Pause the simulation when the hero is scrolled out of view
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) { running = entries[0].isIntersecting; }).observe(hero);
+    }
+
+    setup();
+    if (reduceMotion) { draw(); } else { loop(); }
+  })();
+</script>
 </body>
 </html>
